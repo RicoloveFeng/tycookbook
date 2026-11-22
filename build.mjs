@@ -28,10 +28,16 @@ const branch =
   git(['rev-parse', '--abbrev-ref', 'HEAD'], 'unknown');
 const shortSha = sha.slice(0, 7);
 
+const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
+const siteUrl = (pkg.homepage || 'https://tycookbook.pages.dev').replace(/\/$/, '');
+
 const remote = git(['config', '--get', 'remote.origin.url'], '');
 let repoUrl = remote
+  .trim()
   .replace(/^git@github\.com:/, 'https://github.com/')
   .replace(/^ssh:\/\/git@github\.com\//, 'https://github.com/')
+  // Cloudflare's build checkout embeds a short-lived token in the remote URL.
+  .replace(/^https?:\/\/[^/@]+@/, 'https://')
   .replace(/\.git$/, '');
 if (!repoUrl && process.env.GITHUB_REPOSITORY) {
   repoUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
@@ -40,7 +46,9 @@ if (!repoUrl && process.env.GITHUB_REPOSITORY) {
 const commitUrl =
   repoUrl && /^[0-9a-f]{7,40}$/i.test(sha) ? `${repoUrl}/commit/${sha}` : repoUrl || '#';
 
-const pagesUrl = process.env.CF_PAGES_URL || 'https://tycookbook.pages.dev';
+// On production show the stable domain; on preview branches show the unique deployment URL.
+const deploymentUrl = process.env.CF_PAGES_URL || siteUrl;
+const pagesUrl = branch === 'main' ? siteUrl : deploymentUrl;
 const pagesHost = pagesUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
 const built = new Date();
