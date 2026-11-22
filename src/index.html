@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>欢迎 · tycookbook</title>
+  <meta name="description" content="tycookbook 的构建回执：每次提交后由 Cloudflare Pages 自动构建。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f7f2e6'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23b23a35' stroke-width='3'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --table-top: #101814;
+      --table-glow: #223129;
+      --paper: #f7f2e6;
+      --ink: #1d2821;
+      --ink-soft: #666e67;
+      --rule: #c7bfa9;
+      --seal: #b23a35;
+      --mono: "Courier New", "Cascadia Mono", Consolas, ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(900px 600px at 50% -15%, var(--table-glow), transparent 65%),
+        var(--table-top);
+      color: var(--paper);
+      font-family: var(--mono);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px 64px;
+    }
+
+    .stage {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .receipt {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      background: var(--paper);
+      color: var(--ink);
+      padding: 34px 28px 30px;
+      border-radius: 2px;
+      box-shadow:
+        0 34px 70px rgba(0, 0, 0, .5),
+        0 1px 0 rgba(255, 255, 255, .65) inset;
+      transform: rotate(-.4deg);
+    }
+
+    .serial {
+      margin: 0 0 26px;
+      font-size: .72rem;
+      letter-spacing: .08em;
+      color: var(--ink-soft);
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(2.3rem, 7vw, 3rem);
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    .lede {
+      margin: 0 0 28px;
+      font-size: .95rem;
+      line-height: 1.75;
+      max-width: 34em;
+    }
+
+    .lede code {
+      font-family: var(--mono);
+      font-weight: 700;
+      background: rgba(29, 40, 33, .07);
+      padding: 0 .28em;
+      border-radius: 2px;
+    }
+
+    .facts {
+      margin: 0 0 24px;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+      font-size: .88rem;
+    }
+
+    .fact {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: baseline;
+      gap: .5rem;
+    }
+
+    .fact dt {
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+
+    .fact .leader {
+      border-bottom: 1px dotted var(--rule);
+      transform: translateY(-.28em);
+    }
+
+    .fact dd {
+      margin: 0;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    a {
+      color: inherit;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(29, 40, 33, .35);
+    }
+
+    a:hover {
+      text-decoration-color: currentColor;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--seal);
+      outline-offset: 2px;
+      border-radius: 1px;
+    }
+
+    .barcode {
+      color: var(--ink);
+      opacity: .88;
+      height: 44px;
+      margin-bottom: 8px;
+    }
+
+    .barcode svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sha {
+      margin: 0 0 24px;
+      font-size: .68rem;
+      letter-spacing: .12em;
+      color: var(--ink-soft);
+      text-align: center;
+      word-break: break-all;
+    }
+
+    .receipt-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      padding-top: 20px;
+      border-top: 2px dashed var(--rule);
+    }
+
+    .receipt-foot {
+      font-size: .8rem;
+      line-height: 2;
+    }
+
+    .receipt-foot p { margin: 0; }
+
+    .receipt-foot .muted {
+      color: var(--ink-soft);
+    }
+
+    .stamp {
+      flex: none;
+      width: 104px;
+      height: 104px;
+      border: 2px solid var(--seal);
+      outline: 1px solid rgba(178, 58, 53, .55);
+      outline-offset: -8px;
+      border-radius: 50%;
+      color: var(--seal);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transform: rotate(-13deg);
+      opacity: .82;
+      mix-blend-mode: multiply;
+      animation: press .5s cubic-bezier(.22, .8, .3, 1) both;
+    }
+
+    .stamp-word {
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-indent: .22em;
+    }
+
+    .stamp-date {
+      font-size: .64rem;
+      letter-spacing: .1em;
+    }
+
+    @keyframes press {
+      from {
+        opacity: 0;
+        transform: rotate(-24deg) scale(1.35);
+      }
+      to {
+        opacity: .82;
+        transform: rotate(-13deg) scale(1);
+      }
+    }
+
+    .outside-note {
+      margin: 0;
+      max-width: 380px;
+      text-align: center;
+      font-size: .76rem;
+      line-height: 1.8;
+      color: rgba(247, 242, 230, .55);
+    }
+
+    @media (max-width: 420px) {
+      body { padding: 28px 14px 40px; }
+      .receipt { padding: 28px 20px 24px; }
+      .receipt-bottom { flex-direction: column; align-items: flex-start; }
+      .stamp { width: 92px; height: 92px; align-self: flex-end; margin-top: -8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stamp { animation: none; }
+      .receipt { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <article class="receipt" aria-labelledby="welcome">
+      <p class="serial">构建回执 No. {{SHORT_SHA}}</p>
+      <h1 id="welcome">欢迎。</h1>
+      <p class="lede">每次有人推送到 <code>main</code>，这个页面都会自动重新构建。下面的数字与最新提交一致，就说明流水线是通的。</p>
+
+      <dl class="facts">
+        <div class="fact"><dt>提交</dt><span class="leader" aria-hidden="true"></span><dd><a href="{{COMMIT_URL}}" target="_blank" rel="noreferrer">{{SHORT_SHA}}</a></dd></div>
+        <div class="fact"><dt>分支</dt><span class="leader" aria-hidden="true"></span><dd>{{BRANCH}}</dd></div>
+        <div class="fact"><dt>构建于</dt><span class="leader" aria-hidden="true"></span><dd>{{BUILT_LOCAL}}</dd></div>
+        <div class="fact"><dt>部署至</dt><span class="leader" aria-hidden="true"></span><dd><a href="{{PAGES_URL}}" target="_blank" rel="noreferrer">{{PAGES_HOST}}</a></dd></div>
+      </dl>
+
+      <div class="barcode" aria-hidden="true">{{BARCODE_SVG}}</div>
+      <p class="sha">{{FULL_SHA}}</p>
+
+      <div class="receipt-bottom">
+        <footer class="receipt-foot">
+          <p><a href="{{REPO_URL}}" target="_blank" rel="noreferrer">源代码仓库</a> / <a href="{{COMMIT_URL}}" target="_blank" rel="noreferrer">本次提交</a></p>
+          <p class="muted">由 Cloudflare Pages 构建时生成</p>
+        </footer>
+        <div class="stamp" aria-hidden="true">
+          <span class="stamp-word">已部署</span>
+          <span class="stamp-date">{{BUILT_DATE}}</span>
+        </div>
+      </div>
+    </article>
+
+    <p class="outside-note">这枚回执只在构建时生成一次；刷新页面不会改变它，只有新的提交会。时间为北京时间（UTC+8）。</p>
+  </main>
+</body>
+</html>
