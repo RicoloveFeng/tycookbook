@@ -26,7 +26,7 @@
 ## 本地构建
 
 ```sh
-node build.mjs
+npm run build
 npx serve dist
 ```
 
@@ -36,7 +36,7 @@ npx serve dist
 
 在 Cloudflare 控制台创建 Pages 项目并连接本仓库：
 
-- 构建命令：`node build.mjs`
+- 构建命令：`npm run build`（等价于 `node build.mjs`，见 `package.json` 的 `scripts.build`）
 - 输出目录：`dist`
 - 生产分支：`main`
 
